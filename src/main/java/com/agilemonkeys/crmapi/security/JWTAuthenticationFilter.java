@@ -1,6 +1,7 @@
 package com.agilemonkeys.crmapi.security;
 
 import com.agilemonkeys.crmapi.model.entity.User;
+import com.agilemonkeys.crmapi.model.enums.Roles;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -34,11 +35,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {
-            User credenciales =
+            User credentials =
                     new ObjectMapper().readValue(request.getInputStream(), User.class);
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    credenciales.getUsername(), credenciales.getPassword(), new ArrayList<>()));
+                    credentials.getUsername(), credentials.getPassword(), null));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

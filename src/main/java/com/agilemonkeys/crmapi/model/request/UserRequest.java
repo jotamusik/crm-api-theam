@@ -5,6 +5,7 @@ import com.agilemonkeys.crmapi.model.enums.Roles;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class UserRequest {
@@ -15,5 +16,5 @@ public class UserRequest {
     @NotNull
     private String password;
 
-    private Roles role;
+    private List<Roles> roles;
 }

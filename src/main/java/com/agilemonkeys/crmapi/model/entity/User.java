@@ -13,26 +13,35 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
 @Table(name = "users")
 public class User implements UserDetails {
 
+    public User() { }
+
+    public User(String username, String password, List<Roles> roles) {
+        this.setUsername(username);
+        this.setPassword(password);
+        this.setRoles(roles);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
+    private int id;
 
     @Column(unique = true)
     @NotNull
-    public String username;
+    private String username;
 
     @NotNull
-    public String password;
+    private String password;
 
-    @NotNull
+    @ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Roles role;
+    private List<Roles> roles = new ArrayList<>();
 
     @JsonIgnore
     @Override
@@ -54,6 +63,17 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        User that = (User) o;
+        return id == that.id && Objects.equals(username, that.username) && Objects.equals(password, that.password);
     }
 
     @JsonIgnore

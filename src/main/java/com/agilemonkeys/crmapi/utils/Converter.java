@@ -8,7 +8,6 @@ public class Converter {
         User user = new User();
         user.setUsername(userRequest.getUsername());
         user.setPassword(userRequest.getPassword());
-        user.setRole(userRequest.getRole());
         return user;
     }
 }
