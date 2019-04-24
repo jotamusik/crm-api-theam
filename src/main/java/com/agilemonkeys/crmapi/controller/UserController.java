@@ -1,6 +1,8 @@
 package com.agilemonkeys.crmapi.controller;
 
 
+import com.agilemonkeys.crmapi.exception.ExceptionResponseError;
+import com.agilemonkeys.crmapi.exception.ForbiddenException;
 import com.agilemonkeys.crmapi.model.entity.User;
 import com.agilemonkeys.crmapi.model.enums.Roles;
 import com.agilemonkeys.crmapi.model.request.UserRequest;
@@ -31,10 +33,12 @@ public class UserController {
             @Valid
             @RequestBody
             UserRequest userRequest) {
+
+        // ToDo: Waiting for an answer ( move if to service [Yes | NO] )
         if ( userSecurityService.isCurrentUser(Roles.ROLE_ADMIN) )
             return userService.createUser(userRequest);
         else
-            return null;
+            throw new ForbiddenException(new ExceptionResponseError("user_role", "action_not_allowed"));
     }
 
 }
