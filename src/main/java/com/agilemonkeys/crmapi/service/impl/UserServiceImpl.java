@@ -4,15 +4,16 @@ import com.agilemonkeys.crmapi.exception.ExceptionResponseError;
 import com.agilemonkeys.crmapi.exception.ResourceNotFoundException;
 import com.agilemonkeys.crmapi.model.entity.User;
 import com.agilemonkeys.crmapi.model.enums.Roles;
-import com.agilemonkeys.crmapi.model.request.UserRequest;
+import com.agilemonkeys.crmapi.model.request.CreateUserRequest;
 import com.agilemonkeys.crmapi.repository.UserRepository;
 import com.agilemonkeys.crmapi.service.UserService;
-import com.agilemonkeys.crmapi.utils.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static com.agilemonkeys.crmapi.utils.Converter.fromCreateUserRequest;
 
 
 @Service
@@ -45,16 +46,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(UserRequest userRequest) {
-        userRequest.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
-        User user = Converter.fromUserRequestToUser(userRequest);
+    public User createUser(CreateUserRequest createUserRequest) {
+        createUserRequest.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
+        User newUser = fromCreateUserRequest(createUserRequest);
 
-        if ( userRequest.getRoles() == null || userRequest.getRoles().isEmpty() ) {
-            user.getRoles().add(Roles.ROLE_USER);
-        }
-        else {
-            user.setRoles(userRequest.getRoles());
-        }
-        return userRepository.save(user);
+        if ( createUserRequest.getRoles() == null || createUserRequest.getRoles().isEmpty() )
+            newUser.getRoles().add(Roles.ROLE_USER);
+        else
+            newUser.setRoles(createUserRequest.getRoles());
+
+        return userRepository.save(newUser);
     }
 }

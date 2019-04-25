@@ -5,7 +5,7 @@ import com.agilemonkeys.crmapi.exception.ExceptionResponseError;
 import com.agilemonkeys.crmapi.exception.ForbiddenException;
 import com.agilemonkeys.crmapi.model.entity.User;
 import com.agilemonkeys.crmapi.model.enums.Roles;
-import com.agilemonkeys.crmapi.model.request.UserRequest;
+import com.agilemonkeys.crmapi.model.request.CreateUserRequest;
 import com.agilemonkeys.crmapi.service.UserSecurityService;
 import com.agilemonkeys.crmapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +32,14 @@ public class UserController {
     public User createUser(
             @Valid
             @RequestBody
-            UserRequest userRequest) {
+            CreateUserRequest createUserRequest) {
 
-        // ToDo: Waiting for an answer ( move if to service [Yes | NO] )
         if ( userSecurityService.isCurrentUser(Roles.ROLE_ADMIN) )
-            return userService.createUser(userRequest);
+            return userService.createUser(createUserRequest);
         else
             throw new ForbiddenException(new ExceptionResponseError("user_role", "action_not_allowed"));
     }
+
+    // ToDo: CRUD Users -> First define the users properties
 
 }
