@@ -15,11 +15,15 @@ public class UserSecurityServiceImpl implements UserSecurityService {
     UserRepository userRepository;
 
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")
+                ? null
+                : (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public boolean isCurrentUser(Roles role) {
         User currentUser = getCurrentUser();
+        if ( currentUser == null )
+            return false;
         return currentUser.getRoles().stream().anyMatch(currentRole -> currentRole == role);
     }
 }
